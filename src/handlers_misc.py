@@ -15,6 +15,7 @@ FILEINFO_WAITING_FILE = 1
 
 
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.info(f"STATS user_id={update.message.from_user.id} command=/start")
     await update.message.reply_text("Привет! Я бот для работы с задачами, погодой и курсами валют. \nИспользуй /help для получения списка команд.")
 
 
@@ -92,6 +93,7 @@ async def fileinfo_not_document(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    logger.info(f"STATS user_id={update.message.from_user.id} command=/stats")
     start_time = context.bot_data["start_time"]
     uptime = datetime.now() - start_time
     user_ids, cmd_counter, total_bytes = parse_stats_from_logs("bot.log*")
