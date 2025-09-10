@@ -3,7 +3,7 @@ import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
-from todo_service import TodoService
+from src.todo_service import TodoService
 
 logger = logging.getLogger("simple_tg_bot")
 
@@ -11,7 +11,7 @@ logger = logging.getLogger("simple_tg_bot")
 async def _build_todo_list_message(user_id: int, page: int, todo_service: TodoService):
 
     items, total = await todo_service.list_page(user_id, page, page_size=10)
-    total_pages = max(1, (total // 10) + 1)
+    total_pages = max(1, (total + 9// 10))
     lines = [f"Задачи {page}/{total_pages}:"]
 
     if not items:

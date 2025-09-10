@@ -1,6 +1,7 @@
 import hashlib
 import logging
 from datetime import datetime
+from os import path
 
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
@@ -46,7 +47,7 @@ async def weather_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def rate_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(f"STATS user_id={update.message.from_user.id} command=/rate args={context.args}")
-    if not context.args:
+    if len(context.args) < 2:
         await update.message.reply_text("Использование: /rate <базовая валюта> <валюта1,валюта2,...>")
         return
     base = context.args[0]
@@ -94,12 +95,15 @@ async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     start_time = context.bot_data["start_time"]
     uptime = datetime.now() - start_time
     user_ids, cmd_counter, total_bytes = parse_stats_from_logs("bot.log*")
-    size_kb = total_bytes / 1024.0
+    size_kb_logs = total_bytes / 1024.0
+    db_file = "todo.sqlite3"
+    db_size_kb = (path.getsize(db_file) / 1024.0) if path.exists(db_file) else 0.0
 
     lines = [
         f"Аптайм: {format_timedelta(uptime)}",
         f"Уникальных пользователей: {len(user_ids)}",
-        f"Размер логов: {size_kb:.2f} КБ",
+        f"Размер логов: {size_kb_logs:.2f} КБ",
+        f"Размер БД: {db_size_kb:.2f} КБ",
         "",
     ]
 
